@@ -1,77 +1,83 @@
-# import necessary libraries
 import os
-from flask import (
-    Flask,
-    render_template,
-    jsonify,
-    request,
-    redirect)
 
-#################################################
-# Flask Setup
-#################################################
+import pandas as pd
+import numpy as np
+
+import sqlalchemy
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import Session
+from sqlalchemy import create_engine
+
+from flask import Flask, jsonify, render_template
+from flask_sqlalchemy import SQLAlchemy
+
+from grades_d3 import get_data
+
 app = Flask(__name__)
+
 
 #################################################
 # Database Setup
 #################################################
 
-from flask_sqlalchemy import SQLAlchemy
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', '') or "sqlite:///db.sqlite"
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', '')
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///nc_schools.db"
 db = SQLAlchemy(app)
 
-from .models import Pet
+# reflect an existing database into a new model
+Base = automap_base()
+# reflect the tables
+Base.prepare(db.engine, reflect=True)
 
+# Save references to each table
+MyTable = Base.classes.MyTable
 
-# create route that renders index.html template
 @app.route("/")
-def home():
+def index():
+    """Return the homepage."""
     return render_template("index.html")
 
+@app.route("/get_grades_d3")
+def get_grades_d3():
+    """Return the homepage."""
+    return render_template("grades_d3.html")
 
-# Query the database and send the jsonified results
-@app.route("/send", methods=["GET", "POST"])
-def send():
-    if request.method == "POST":
-        name = request.form["petName"]
-        lat = request.form["petLat"]
-        lon = request.form["petLon"]
+@app.route("/api/d3")
+def ddd():
+    """Return the MetaData for a given sample."""
+#    stmt = db.session.query(MyTable).statement
+# 
+#    df = pd.read_sql_query(stmt, db.session.bind)
+#
+#    # Filter the data based on the sample number and
+#    # only keep rows with values above 1
+#    # sample_data = df.loc[df[sample] > 1, ["otu_id", "otu_label", sample]]
+#    # Format the data to send as json
+#    data = {
+#        "district_name": df.district_name.tolist(),
+#        "spg_score": df.spg_score.tolist(),
+#        "calc_student_teach_ratio": df.calc_student_teach_ratio.tolist(),
+#    }
+    return get_data(db, MyTable)
 
-        pet = Pet(name=name, lat=lat, lon=lon)
-        db.session.add(pet)
-        db.session.commit()
-        return redirect("/", code=302)
-
-    return render_template("form.html")
 
 
-@app.route("/api/pals")
-def pals():
-    results = db.session.query(Pet.name, Pet.lat, Pet.lon).all()
-
-    hover_text = [result[0] for result in results]
-    lat = [result[1] for result in results]
-    lon = [result[2] for result in results]
-
-    pet_data = [{
-        "type": "scattergeo",
-        "locationmode": "USA-states",
-        "lat": lat,
-        "lon": lon,
-        "text": hover_text,
-        "hoverinfo": "text",
-        "marker": {
-            "size": 50,
-            "line": {
-                "color": "rgb(8,8,8)",
-                "width": 1
-            },
-        }
-    }]
-
-    return jsonify(pet_data)
-
+#     sel = [
+#         MyTable.district_name,
+#         MyTable.spg_score,
+#         MyTable.calc_student_teach_ratio
+#     ]
+# 
+#     results = db.session.query(*sel).all()
+# 
+#     # Create a dictionary entry for each row of metadata information
+#     result_data = {}
+#     for result in results:
+#         result_data["district_name"] = result[0]
+#         result_data["spg_score"] = result[1]
+#         result_data["calc_student_teach_ratio"] = result[2]
+# 
+#     print(result_data)
+#     return jsonify(result_data)
 
 if __name__ == "__main__":
     app.run()
