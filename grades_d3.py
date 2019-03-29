@@ -27,4 +27,4 @@ def get_data(db, table):
         "calc_student_teach_ratio": df.calc_student_teach_ratio.tolist(),
     }
 
-    return jsonify(data);
+    return jsonify(data)
