@@ -9,7 +9,7 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 
 from grades_d3 import get_data
@@ -94,8 +94,13 @@ def mapdata():
 @app.route("/api/mrkdata")
 def mrkdata():
     """Return the Data for a given database and table."""
-    return get_mrkdata(db, MyTable)
+    data = get_mrkdata(db, MyTable)
 
+    return data
+
+@app.route('/js/<path:path>')
+def send_js(path):
+    return send_from_directory('static', path)
 
 if __name__ == "__main__":
     app.run(debug=True)
