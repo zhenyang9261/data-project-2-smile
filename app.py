@@ -64,7 +64,7 @@ def get_mapdata():
 
 # Map with markers page
 @app.route("/get_mrkdata")
-def get_mrkdata():
+def get_data_mrk():
     """Return Map with markers page."""
     return render_template("l_markers.html")
 
@@ -98,4 +98,5 @@ def mrkdata():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
+
