@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>NC Schools Metrics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+
+<body> 
+  <div class="wrapper">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="index.html">NC School Metrics
+            <img class="nav-ufo" src="static/images/ufo.svg">
+          </a>
+        </div>
+      </div>
+    </nav>
+    <div class="hero text-center">
+      <h1>NC School Metrics</h1>
+      <p>The Truth is Out There</p>
+    </div>
+    <div class="container">
+      <div class="row margin-top-50">
+        <div class="col-md-2">
+          <aside class="filters">
+            <div class="panel panel-default">
+              <div class="panel-heading">Filter Search</div>
+              <div class="panel-body">
+                <form>
+                  <div class="form-group">
+                    <ul class="list-group" id="filters">
+                      <li class="filter list-group-item">
+                        <label for="date">Enter a spg_score</label>
+                        <input class="form-control" id="spg_score1" type="text" placeholder="0">
+                        <input class="form-control" id="spg_score2" type="text" placeholder="100">
+                        <label for="city">Enter an Address</label>
+                        <input class="form-control" id="full_address" type="text" placeholder="abc">
+                        <label for="state">Enter a school_name</label>
+                        <input class="form-control" id="school_name" type="text" placeholder="MIT">
+                        <label for="country">Enter a grade</label>
+                        <input class="form-control" id="grade" type="text" placeholder="A">
+                        <label for="shape">Enter a school_type_txt</label>
+                        <input class="form-control" id="school_type_txt" type="text" placeholder="Regular">
+                      </li>
+                    </ul>
+                  </div>
+                  <button id="filter-btn" type="submit" class="btn btn-default">Filter Table</button>
+                  <button id="reset-btn"  type="submit" class="btn btn-default" >Reset Search</button>
+                </form>
+              </div>
+            </div>
+          </aside>
+        </div>
+        <div class="col-md-10">
+          <div id="table-area" class="">
+            <table id="ufo-table" class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="table-head">full_address</th>
+                  <th class="table-head">lon</th>
+                  <th class="table-head">lax</th>
+                  <th class="table-head">school_code</th>
+                  <th class="table-head">district_name</th>
+                  <th class="table-head">school_name</th>
+                  <th class="table-head">grade</th>
+                  <th class="table-head">spg_score</th>
+                  <th class="table-head">crime_per_c_num</th>
+                  <th class="table-head">szip_ad</th>
+                  <th class="table-head">school_type_txt</th>
+                  <th class="table-head">calendar_only_txt</th>
+                  <th class="table-head">student_num</th>
+                  <th class="table-head">class_teach_num</th>
+                  <th class="table-head">calc_student_teach_ratio</th>
+                  <th class="table-head">state_ppe</th>
+                  <th class="table-head">federal_ppe</th>
+                  <th class="table-head">local_ppe</th>
+                  <th class="table-head">total_ppe</th>
+                  
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <span class="bottom">UFO Sightings</span>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.js"></script>
+  
+  <script src="static/js/app.js"></script>
+</body>
+
+</html>
