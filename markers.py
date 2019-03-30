@@ -11,7 +11,7 @@ from sqlalchemy import create_engine
 from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 
-def getmapdata(db, table):
+def get_mrkdata(db, table):
 
     stmt = db.session.query(table).statement
 # 

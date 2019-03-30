@@ -1,3 +1,4 @@
+# Import dependencies
 import os
 
 import pandas as pd
@@ -12,9 +13,11 @@ from flask import Flask, jsonify, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 from grades_d3 import get_data
+from filter import get_filter_data
+from l_heatmap import getmapdata
+from markers import get_mrkdata
 
 app = Flask(__name__)
-
 
 #################################################
 # Database Setup
@@ -31,53 +34,68 @@ Base.prepare(db.engine, reflect=True)
 # Save references to each table
 MyTable = Base.classes.MyTable
 
+#################################################
+# Flask Render Templates
+#################################################
+
+# Index page
 @app.route("/")
 def index():
     """Return the homepage."""
     return render_template("index.html")
 
+# D3 scatter plot page
 @app.route("/get_grades_d3")
 def get_grades_d3():
-    """Return the homepage."""
+    """Return D3 scatter plot page."""
     return render_template("grades_d3.html")
 
+# Filter table page
+@app.route("/get_filter")
+def get_filter():
+   """Return Filter table page."""
+   return render_template("filter_js.html")
+
+# Heat map page
+@app.route("/get_mapdata")
+def get_mapdata():
+    """Return Heat map page."""
+    return render_template("l_heatmap.html")
+
+# Map with markers page
+@app.route("/get_mrkdata")
+def get_mrkdata():
+    """Return Map with markers page."""
+    return render_template("l_markers.html")
+
+#################################################
+# API for data 
+#################################################
+
+# API for D3 scatter plots
 @app.route("/api/d3")
 def ddd():
-    """Return the MetaData for a given sample."""
-#    stmt = db.session.query(MyTable).statement
-# 
-#    df = pd.read_sql_query(stmt, db.session.bind)
-#
-#    # Filter the data based on the sample number and
-#    # only keep rows with values above 1
-#    # sample_data = df.loc[df[sample] > 1, ["otu_id", "otu_label", sample]]
-#    # Format the data to send as json
-#    data = {
-#        "district_name": df.district_name.tolist(),
-#        "spg_score": df.spg_score.tolist(),
-#        "calc_student_teach_ratio": df.calc_student_teach_ratio.tolist(),
-#    }
+    """Return the Data for a given database and table."""
     return get_data(db, MyTable)
 
+# API for filter table
+@app.route("/api/filter")
+def filter():
+   """Return the Data for a given database and table."""
+   return get_filter_data(db, MyTable)
 
+# API for heat map 
+@app.route("/api/mapdata")
+def mapdata():
+    """Return the Data for a given database and table."""
+    return getmapdata(db, MyTable)
 
-#     sel = [
-#         MyTable.district_name,
-#         MyTable.spg_score,
-#         MyTable.calc_student_teach_ratio
-#     ]
-# 
-#     results = db.session.query(*sel).all()
-# 
-#     # Create a dictionary entry for each row of metadata information
-#     result_data = {}
-#     for result in results:
-#         result_data["district_name"] = result[0]
-#         result_data["spg_score"] = result[1]
-#         result_data["calc_student_teach_ratio"] = result[2]
-# 
-#     print(result_data)
-#     return jsonify(result_data)
+# API for map with markers
+@app.route("/api/mrkdata")
+def mrkdata():
+    """Return the Data for a given database and table."""
+    return get_mrkdata(db, MyTable)
+
 
 if __name__ == "__main__":
     app.run()
