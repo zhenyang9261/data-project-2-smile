@@ -54,7 +54,7 @@ d3.request("/api/mrkdata", function(response) {
     var school = schools[index];
 
     var schoolMarker = L.marker([school.lat, school.lon])
-      .bindPopup("<h3>" + school.district_name + "<h3>");
+      .bindPopup("<h6><b>" + school.district_name + "<h6></b>" + "<h6><b>School Type: </b>" + school.school_type_txt + "<h6>" + "<h6><b>School Score: </b>" + school.spg_score + "<h6>" + "<h6><b>Student Body: </b>" + school.student_num + "<h6>" + "<h6><b>School Calendar: </b>" + school.calendar_only_txt + "<h6>");
 
     //Add the marker to the schoolMarkers array
     schoolMarkers.push(schoolMarker);
