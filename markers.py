@@ -17,7 +17,9 @@ def get_mrkdata(db, table):
        table.school_type_txt,
        table.spg_score,
        table.lat,
-       table.lon
+       table.lon,
+       table.calendar_only_txt,
+       table.student_num
    ]
    
     results = db.session.query(*sel).all()
@@ -28,10 +30,10 @@ def get_mrkdata(db, table):
        result_data_dict["district_name"] = result[0]
        result_data_dict["school_type_txt"] = result[1]
        result_data_dict["spg_score"] = result[2]
-    #    result_data_dict["school_calendar"] = result[3]
-    #    result_data_dict["student_body"] = result[4]
        result_data_dict["lat"] = result[3]
        result_data_dict["lon"] = result[4]
+       result_data_dict["calendar_only_txt"] = result[5]
+       result_data_dict["student_num"] = result[6]
 
        results_data_list.append(result_data_dict)
 
