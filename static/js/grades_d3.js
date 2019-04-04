@@ -88,15 +88,6 @@ function renderCircles(circlesGroup, newXScale, chosenXaxis) {
   return circlesGroup;
 }
 
-// function renderTexts(textsGroup, newXScale, chosenXaxis) {
-// 
-//   textsGroup.transition()
-//     .duration(1000)
-//     .attr("dx", d => newXScale(d[chosenXAxis]));
-// 
-//   return textsGroup;
-// }
-
 /*
  * Function used for updating circles group with new tooltip
  */
@@ -188,27 +179,6 @@ function buildPlot_ppe(factData) {
     .attr("r", 6)
     .attr("fill", "#2E64FE")
     .attr("opacity", "1");
-    
-//  var textsGroup = chartGroup.selectAll("text")
-//     .data(factData)
-//     .enter()
-//     // We return the abbreviation to .text, which makes the text the abbreviation.
-//     .append("text")
-//     .text(function(d) {
-//       return d.district_name;
-//     })
-//     // Now place the text using our scale.
-//     .attr("dx", function(d) {
-//       return xLinearScale(d[chosenXAxis]);
-//     })
-//     .attr("dy", function(d) {
-//       // When the size of the text is the radius,
-//       // adding a third of the radius to the height
-//       // pushes it into the middle of the circle.
-//       return yLinearScale(d.spg_score);
-//     })
-//     //.attr("class", "stateText")
-//     .attr("font-size", 9);
  
   // Create group for  2 x- axis labels
   var labelsGroup = chartGroup.append("g")
@@ -219,21 +189,21 @@ function buildPlot_ppe(factData) {
     .attr("y", 20)
     .attr("value", "federal_ppe") // value to grab for event listener
     .classed("active", true)
-    .text("Federal Expense Per Pupil");
+    .text("Federal Expense Per Pupil ($)");
 
   var stateLabel = labelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 40)
     .attr("value", "state_ppe") // value to grab for event listener
     .classed("inactive", true)
-    .text("State Expense Per Pupil)");
+    .text("State Expense Per Pupil ($)");
   
   var localLabel = labelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 60)
     .attr("value", "local_ppe") // value to grab for event listener
     .classed("inactive", true)
-    .text("Local Expense Per Pupil");
+    .text("Local Expense Per Pupil ($)");
 
   // append y axis
   chartGroup.append("text")
