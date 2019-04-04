@@ -1,3 +1,11 @@
+h1, p {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+jumbotron h1, p {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .img-visual {
     width: 95%;
     height: auto;
@@ -12,13 +20,13 @@
     transition: transform .5s; /* Animation */
   }
   
-  .zoom:hover {
+.zoom:hover {
     -ms-transform: scale(1.1); /* IE 9 */
     -webkit-transform: scale(1.1); /* Safari 3-8 */
     transform: scale(1.1); 
-  }
+}
   
-  .zoom .caption {
+.zoom .caption {
     display: none;
     position: absolute;
     overflow: hidden;
@@ -39,7 +47,7 @@
     font-size: 1.5em;
   }
   
-  .zoom:hover .caption {
+.zoom:hover .caption {
     display: block;
     filter: alpha(opacity=50);
     -webkit-transform: scale(1);
@@ -47,11 +55,11 @@
     transform: scale(1);
   }   
 
-  * {
+* {
     box-sizing: border-box;
-  }
+}
   
-  .bg-img {
+.bg-img {
     position: relative;
     height: auto;
     width: 100%;
@@ -63,22 +71,22 @@
     background-position: bottom center;
     background-size: cover;
     
-  }
-  
-  .bg-img h1 {
+}
+
+.bg-img h1 {
     margin-top: 50px;
     font-size: 0.1rem;
     color:#084B8A;
     animation: title 1.2s forwards linear;
-  }
+}
   
-  .bg-img p {
+.bg-img p {
     font-size: 2rem;
     color:#084B8A;
     opacity: 0;
     animation: subtitle 1.2s forwards linear;
     animation-delay: 1.2s;
-  }
+}
   
 
   /* keyframe animations which will be used to animate the title */

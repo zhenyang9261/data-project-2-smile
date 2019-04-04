@@ -6,11 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>NC Schools Performance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/grades_d3.css') }}">
+
+    <!-- Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- jQuery -->
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
     <script>
         $( function() {
             $( "#accordion" ).accordion();
@@ -19,11 +27,35 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-default" id="navbar-background">
+        <div class="container">
+                  
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" id="site-logo" href="/">NC Schools</a>
+            </div>
+                    
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/get_mapdata">Heat Map <span aria-hidden="true"></span></a></li>
+                    <li><a href="/get_mrkdata">Marker Map <span aria-hidden="true"></span></a></li>
+                    <li><a href="/get_grades_d3">D3 Plots <span aria-hidden="true"></span></a></li>
+                    <li><a href="/get_filter">Filter Table <span aria-hidden="true"></span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
     <div class="container">
-        <div class="jumbotron" style="text-align: center">
+        <div class="jumbotron" style="text-align: center"> 
             <h1>School Performance Grades</h1>
             <p></p>
-        </div>
+        </div>  
 
         <div class="row">
             <div class="col-md-12">

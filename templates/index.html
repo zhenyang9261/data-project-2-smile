@@ -5,71 +5,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>NC School Performance</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>NC Schools Report Cards and Metadata</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+    <!-- Our CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/mainstyle.css') }}">
+    
+    <!-- Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    
 </head>
 
 <body>
-    <div class="container">
-        <!-- <div class="jumbotron" style="text-align: center; background-image: url("../image/classroom_bkg.jpg");">
-            <h1>North Carolina Public Schools Performance 2014</h1>
-            <p></p>
-        </div> -->
-      
-
-        <div class="bg-img text-center">
-            <h1>North Carolina Schools</h1>
-            <p>Report Cards and Metadata</p>
+  <nav class="navbar navbar-default" id="navbar-background">
+        <div class="container">
+                  
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" id="site-logo" href="/">NC Schools</a>
+            </div>
+                    
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/get_mapdata">Heat Map <span aria-hidden="true"></span></a></li>
+                    <li><a href="/get_mrkdata">Marker Map <span aria-hidden="true"></span></a></li>
+                    <li><a href="/get_grades_d3">D3 Plots <span aria-hidden="true"></span></a></li>
+                    <li><a href="/get_filter">Filter Table <span aria-hidden="true"></span></a></li>
+                </ul>
+            </div>
         </div>
+  </nav>
 
-        <div class="row">
+  <div class="container">
+      
+      <div class="bg-img text-center">
+          <h1>North Carolina Schools</h1>
+          <p>Report Cards and Metadata</p>
+      </div>
 
-            <div class="col-xs-12 col-md-2 spacer-bottom"></div>
-            <div class="col-xs-12 col-md-4 spacer-bottom">
-                <div class="zoom"> 
-                  <a href="/get_mrkdata"><img class="img-responsive img-visual" src="{{ url_for('static', filename='image/markers.png') }}" alt="Marker Map">
-                  <div class="caption">
+      <div class="row">
+
+          <div class="col-xs-12 col-md-2 spacer-bottom"></div>
+          <div class="col-xs-12 col-md-4 spacer-bottom">
+              <div class="zoom"> 
+                <a href="/get_mrkdata"><img class="img-responsive img-visual" src="{{ url_for('static', filename='image/markers.png') }}" alt="Marker Map">
+                <div class="caption">
                     Marker Map
-                  </div>
-                  </a>
                 </div>
-            </div>
+                </a>
+              </div>
+          </div>
             
-            <div class="col-xs-12 col-md-4 spacer-bottom">
-                <div class="zoom"> 
-                  <a href="/get_mapdata"><img class="img-responsive img-visual" src="{{ url_for('static', filename='image/scatter_plot.png') }}" alt="Heat Map">
-                  <div class="caption">
-                    Heat Map
-                  </div>
-                  </a>
+          <div class="col-xs-12 col-md-4 spacer-bottom">
+              <div class="zoom"> 
+                <a href="/get_mapdata"><img class="img-responsive img-visual" src="{{ url_for('static', filename='image/scatter_plot.png') }}" alt="Heat Map">
+                <div class="caption">
+                  Heat Map
                 </div>
-            </div>
-            <div class="col-xs-12 col-md-2 spacer-bottom"></div>
+                </a>
+              </div>
+          </div>
+          <div class="col-xs-12 col-md-2 spacer-bottom"></div>
+      </div>  <!-- end of first row -->
 
-            <div class="col-xs-12 col-md-2 spacer-bottom"></div>
-            <div class="col-xs-12 col-md-4 spacer-bottom">
-              <div class="zoom"> 
-                <a href="/get_grades_d3"><img class="img-responsive img-visual" src="{{ url_for('static', filename='image/scatter_plot.png') }}" alt="D3 Scatter Plot">
-                <div class="caption">
-                  D3 Scatter Plots
-                </div>
-                </a>
+      <div class="row">
+          <div class="col-xs-12 col-md-2 spacer-bottom"></div>
+          <div class="col-xs-12 col-md-4 spacer-bottom">
+            <div class="zoom"> 
+              <a href="/get_grades_d3"><img class="img-responsive img-visual" src="{{ url_for('static', filename='image/scatter_plot.png') }}" alt="D3 Scatter Plot">
+              <div class="caption">
+                D3 Scatter Plots
               </div>
+              </a>
             </div>
-    
-            <div class="col-xs-12 col-md-4 spacer-bottom">
-              <div class="zoom"> 
-                <a href="/get_filter"><img class="img-responsive img-visual" src="{{ url_for('static', filename='image/scatter_plot.png') }}" alt="Filter Table">
-                <div class="caption">
-                  Filter Table
-                </div>
-                </a>
+          </div>
+          <div class="col-xs-12 col-md-4 spacer-bottom">
+            <div class="zoom"> 
+              <a href="/get_filter"><img class="img-responsive img-visual" src="{{ url_for('static', filename='image/scatter_plot.png') }}" alt="Filter Table">
+              <div class="caption">
+                Filter Table
               </div>
+              </a>
             </div>
-            <div class="col-xs-12 col-md-2 spacer-bottom"></div>
-            
-          </div> <!-- end row -->
+          </div>
+          <div class="col-xs-12 col-md-2 spacer-bottom"></div>
+          
+        </div> <!-- end of 2nd row -->
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.min.js"></script>
