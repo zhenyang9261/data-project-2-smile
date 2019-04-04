@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>NC Schools Metrics</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/superhero/bootstrap.min.css"> -->
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+  <!-- <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="static/css/style_filter.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+ <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+ <!-- <script type="text/javascript" language="javascript" src="{{ url_for('static', filename='js/tablefilter.js') }}"></script> -->
+ <!-- Bootstrap -->
+ <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+ <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+ </head>
+
+<body> 
+    <nav class="navbar navbar-default" id="navbar-background">
+        <div class="container">
+ 
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" id="site-logo" href="/">NC Schools</a>
+            </div>
+ 
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li><a href="/get_mapdata">Heat Map <span aria-hidden="true"></span></a></li>
+                    <li><a href="/get_mrkdata">Marker Map <span aria-hidden="true"></span></a></li>
+                    <li><a href="/get_grades_d3">D3 Plots <span aria-hidden="true"></span></a></li>
+                    <li><a href="/get_filter">Filter Table <span aria-hidden="true"></span></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+  <div class="wrapper">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" >NC School Metrics
+            <!-- <img class="nav-ufo" src="static/image/school.jpg"> -->
+          </a>
+        </div>
+      </div>
+    </nav>
+    <div class="hero text-center">
+      <h1>NC School Infomation</h1>
+      <p>search by yourself!</p>>
+      
+    </div>
+    <div class="container">
+      <div class="row margin-top-50">
+        <div class="col-md-2">
+          <aside class="filters">
+            <div class="panel panel-default">
+              <div class="panel-heading">Filter Search</div>
+              <div class="panel-body">
+                <form>
+                  <div class="form-group">
+                    <ul class="list-group" id="filters">
+                      <li class="filter list-group-item">
+                        <label for="date">Search in All Field</label>
+                        <input class="form-control" id="mysearch" type="text" placeholder="any value">
+                        <!-- <label for="date">Enter a SPG Sscore</label>
+                        <label for="date">(From)</label>
+                        <input class="form-control" id="spg_score1" type="text" placeholder="0">
+                        <label for="date">To</label>
+                        <input class="form-control" id="spg_score2" type="text" placeholder="100"> -->
+                        <label for="city">Enter an Address or Zip Code</label>
+                        <input class="form-control" id="full_address" type="text" placeholder="abc">
+                        <label for="state">Enter a School Name</label>
+                        <input class="form-control" id="school_name" type="text" placeholder="MIT">
+                        <label for="country">Enter a Grade</label>
+                        <input class="form-control" id="grade" type="text" placeholder="A">
+                        <label for="shape">Enter a School Type</label>
+                        <input class="form-control" id="school_type_txt" type="text" placeholder="Regular">
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- <button id="filter-btn" type="submit" class="btn btn-default">Filter Table</button>
+                  <button id="reset-btn"  type="submit" class="btn btn-default" >Reset Search</button> -->
+                </form>
+              </div>
+            </div>
+          </aside>
+        </div>
+        <div class="col-md-10">
+          <div id="table-area" class="">
+            <table id="table" class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="table-head">Student/Teacher Ratio</th>
+                  <!-- <th class="table-head">Calendar</th> -->
+                  <!-- <th class="table-head">Teacher Num</th> -->
+                  <th class="table-head">Crime Num</th>
+                  <th class="table-head">District Name</th>
+                  <th class="table-head">Federal PPE</th>
+                  <th class="table-head">Full Address</th>
+                  <th class="table-head">Grade</th>
+                  <!-- <th class="table-head">Local ppe</th> -->
+                  <!-- <th class="table-head">Lon</th>
+                  <th class="table-head">Lax</th> -->
+                  <th class="table-head">School Code</th>              
+                  <th class="table-head">School Name</th>
+                  <th class="table-head">School Type</th>
+                  <th class="table-head">SPG Score</th>
+                  <th class="table-head">Student Num</th>
+                  <!-- <th class="table-head">Zip Code</th> -->
+                  <!-- <th class="table-head">state_ppe</th> -->                
+                  <th class="table-head">Total PPE</th>
+                  
+                </tr>
+              </thead>
+              <tbody id="metric-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <span class="bottom">NC School Metrics</span>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.11.0/d3.js"></script>
+  
+
+  
+  <script>
+    $(document).ready(function() {
+      var tbody = d3.select("tbody");
+      function displayData(tableData){
+        //console.log(tableData)
+
+        tableData.forEach(function(record){
+          // console.log(record)
+                  var row = tbody.append("tr");
+            
+          Object.entries(record).forEach(function([key, value]){
+            var cell = row.append("td");
+            cell.text(value);
+          });
+        });  
+      };
+      
+      
+      $.ajax({
+        url: '/api/filter',
+        type: 'GET',
+        dataType : "json",
+        contentType: "application/json",
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        },
+        success: displayData
+      })
+    })
+  </script>
+
+  <script>
+      $(document).ready(function(){
+        $("#mysearch").on("keyup", function() {
+          var value = $(this).val().toLowerCase();
+          $("#metric-table tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+          });
+        });
+  
+        $(".filter input").on("keyup", function(event) {
+          console.log(event)
+          event.preventDefault()
+          var value = $(this).val().toLowerCase();
+          var input = $(this).attr('id')
+          var field = false
+          console.log(input)
+          switch(input){
+            case 'full_address':
+              field = 5
+              break
+            case 'school_name': // id of the input field
+              field = 8 // index of the column (not 0 index)
+              break
+            case 'grade':
+              field = 6
+              break
+            case 'school_type_txt':
+              field = 9
+              break
+            default:
+              break
+          }
+          // true_of_false_value ? 'this value' : 'a different value'
+          $("#metric-table tr" + field ? 'td:nth-of-type(' + field + ')': '').filter(function() {
+            // console.log($(this))
+            if(field){
+              var tag = $(this).html();
+              $(this).parent().toggle(tag.toLowerCase().indexOf(value) > -1)
+            } else {
+              var tag = $(this).children().eq(3);
+              $(this).toggle(tag.text().toLowerCase().indexOf(value) > -1)
+            }
+            
+          });
+        });
+      });
+  </script>  
+
+<!-- <script>
+  $(document).ready(function(){
+    $("#mysearch").on("keyup", function() {
+      var value = $(this).val().toLowerCase();
+      $("#metric-table tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });
+
+    $(".filter input").on("keyup", function(event) {
+      console.log(event)
+      event.preventDefault()
+      var value = $(this).val().toLowerCase();
+      var input = $(this).attr('id')
+      var field = false
+      var fields = []
+      console.log(input)
+      switch(input){
+        case 'full_address':
+          field = 4
+          break
+        case 'school_name': // id of the input field
+          field = 7 // index of the column (not 0 index)
+          break
+        case 'grade':
+          field = 5
+          break
+        case 'school_type_txt':
+          field = 8
+          break
+        default:
+          break
+      }
+      // true_of_false_value ? 'this value' : 'a different value'
+      if(field){
+        fields.append(field)
+      }
+      
+      fields.forEach(function(column){
+      $("#metric-table tr" + column ? 'td:nth-of-type(' + column + ')': '').filter(function() {
+        // console.log($(this))
+        if(column){
+          var tag = $(this).html();
+          $(this).parent().toggle(tag.toLowerCase().indexOf(value) > -1)
+        } else {
+          var tag = $(this).children().eq(3);
+          $(this).toggle(tag.text().toLowerCase().indexOf(value) > -1)
+        }
+      });  
+      });
+    });
+  });
+</script>  -->
+
+    
+  
+</body>
+
+</html>
