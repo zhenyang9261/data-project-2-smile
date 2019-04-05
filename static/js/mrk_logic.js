@@ -1,6 +1,54 @@
-function createMap(schoolLocations) {
+var map; 
 
-  console.log("Starting map function");
+//Initialize an object containing icosn for each layer group
+var icons = {
+  Regular: L.ExtraMarkers.icon({
+    icon: 'ion-settings',
+    iconColor: 'white',
+    markerColor: 'yellow',
+    shape: 'star'
+  }),
+  Magnet: L.ExtraMarkers.icon({
+    icon: 'ion-android-bicyle',
+    iconColor: 'white',
+    markerColor: 'red',
+    shape: 'circle'
+  }),
+  Hospital: L.ExtraMarkers.icon({
+    icon: 'ion-minus-circled',
+    iconColor: 'white',
+    markerColor: 'blue-dark',
+    shape: 'penta'
+  })
+};
+
+//ADVANCED
+// Initialize the LayerGroups
+var layers = {
+  Regular: new L.LayerGroup(),
+  Magnet: new L.LayerGroup(),
+  Hospital: new L.LayerGroup
+}; 
+
+//Create an overlays object to add to the layer control
+var overlays = {
+  "Regular": layers.Regular,
+  "Magnet": layers.Magnet,
+  "Hospital": layers.Hospital
+};
+
+//Create a legend to display information about our map
+var info = L.control({
+  position: 'bottomright'
+});
+
+//When the layer control is added, insert a div with the class of 'legend'
+info.onAdd = function() {
+  var div = L.DomUtil.create('div', 'legend');
+  return div;
+};
+
+function createMap(schoolLocations) {
 
 // Create the tile layer that will be the background of our map
 var lightmap = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}", {
@@ -21,31 +69,31 @@ var overlayMaps = {
 };
 
 //Create map object with options
-var map = L.map("map-id", {
+map = L.map("map-id", {
   center: [35.782169, -80.793457],
   zoom: 12,
-  layers: [lightmap, schoolLocations]
+  layers: [lightmap, schoolLocations,
+  layers.Regular,
+  layers.Magnet,
+  layers.Hospital
+]
 });
 
+//Add the info legend to the map
+info.addTo(map);
+
 //Create layer control
-L.control.layers(baseMaps, overlayMaps, {
+L.control.layers(baseMaps, overlayMaps, overlays, {
   collapsed: false
 }).addTo(map);
-
-console.log("End of maps function.");
 };
 
 // Perform an API call to the NC School endpoint
-
 d3.request("/api/mrkdata", function(response) {
-  
-  console.log('this is the data for the markers', response);
 
   // Pull the "schools" property off of response
   var schools = JSON.parse(response.response);
-  console.log('this is the schools json dat', schools)
-  console.log(schools);
-
+ 
   // Initialize an array to hold school markers
   var schoolMarkers = [];
 
@@ -54,7 +102,7 @@ d3.request("/api/mrkdata", function(response) {
     var school = schools[index];
 
     var schoolMarker = L.marker([school.lat, school.lon])
-      .bindPopup("<h6><b>" + school.district_name + "<h6></b>" + "<h6><b>School Type: </b>" + school.school_type_txt + "<h6>" + "<h6><b>School Score: </b>" + school.spg_score + "<h6>" + "<h6><b>Student Body: </b>" + school.student_num + "<h6>" + "<h6><b>School Calendar: </b>" + school.calendar_only_txt + "<h6>");
+      .bindPopup("<h6><b>" + school.district_name + "<h6></b>" + "<h6><b>School Name: </b>" + school.school_name + "<h6><b>School Type: </b>" + school.school_type_txt + "<h6>" + "<h6><b>School Score: </b>" + school.spg_score + "<h6>" + "<h6><b>Student Body: </b>" + school.student_num + "<h6>" + "<h6><b>School Calendar: </b>" + school.calendar_only_txt + "<h6>");
 
     //Add the marker to the schoolMarkers array
     schoolMarkers.push(schoolMarker);
@@ -62,6 +110,63 @@ d3.request("/api/mrkdata", function(response) {
 
    // Create a layer group made from the school markers array, pass it into the createMap function
    createMap(L.layerGroup(schoolMarkers));
+
+   //Create an object to keep track of the number of markers in each layer
+var schoolCount = {
+  Regular: 0,
+  Magnet: 0,
+  Hospital: 0
+};
+
+//Initialize a schoolStatusCode, used as a key to access the appropriate layers, icons, and school count for the layer group
+var schoolStatusCode; 
+
+//Loop through the schools
+for (var i = 0; i < schools.length; i++) 
+{
+  var type = Object.assign({}, schools[i]);
+
+  //If school is regular, then assign regular status
+  if (type.school_type_txt === 'Hospital School') {
+    schoolStatusCode = "Hospital";
+  }
+
+  else if (type.school_type_txt === 'Magnet School') {
+    schoolStatusCode = "Magnet";
+  }
+
+  else {
+    schoolStatusCode = "Regular";
+  }
+
+  //Update the school count
+  schoolCount[schoolStatusCode]++;
+
+  //Create new marker with appropriate icon/coordinates
+  var newMarker = L.marker([school.lat, school.lon], {
+    icon: icons[schoolStatusCode]
+  });
+
+  //Add the new marker to the appropriate layer
+  newMarker.addTo(layers[schoolStatusCode]);
+
+  //Bind popup.
+  newMarker.bindPopup("<h6><b>" + school.district_name + "<h6></b>" + "<h6><b>School Name: </b>" + school.school_name + "<h6><b>School Type: </b>" + school.school_type_txt + "<h6>" + "<h6><b>School Score: </b>" + school.spg_score + "<h6>" + "<h6><b>Student Body: </b>" + school.student_num + "<h6>" + "<h6><b>School Calendar: </b>" + school.calendar_only_txt + "<h6>");
+}
+
+  //Call the updateLegend function
+  updateLegend(schoolCount);
 });
 
-console.log("This is the createMarkers function");
+function updateLegend(schoolCount) {
+  document.querySelector('.legend').innerHTML = [
+    "<p class='Regular'>Regular Schools: " + schoolCount.Regular + "</p>",
+    "<p class='Hospital'>Hospital Schools: " + schoolCount.Hospital + "</p>",
+    "<p class='Magnet'>Magnet Schools: " + schoolCount.Magnet + "</p>",
+  ].join("");
+}
+
+
+
+
+

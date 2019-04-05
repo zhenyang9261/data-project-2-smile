@@ -14,6 +14,7 @@ from flask_sqlalchemy import SQLAlchemy
 def get_mrkdata(db, table):
     sel = [
        table.district_name,
+       table.school_name,
        table.school_type_txt,
        table.spg_score,
        table.lat,
@@ -28,12 +29,13 @@ def get_mrkdata(db, table):
     for result in results:
        result_data_dict = {}
        result_data_dict["district_name"] = result[0]
-       result_data_dict["school_type_txt"] = result[1]
-       result_data_dict["spg_score"] = result[2]
-       result_data_dict["lat"] = result[3]
-       result_data_dict["lon"] = result[4]
-       result_data_dict["calendar_only_txt"] = result[5]
-       result_data_dict["student_num"] = result[6]
+       result_data_dict["school_name"] = result[1]
+       result_data_dict["school_type_txt"] = result[2]
+       result_data_dict["spg_score"] = result[3]
+       result_data_dict["lat"] = result[4]
+       result_data_dict["lon"] = result[5]
+       result_data_dict["calendar_only_txt"] = result[6]
+       result_data_dict["student_num"] = result[7]
 
        results_data_list.append(result_data_dict)
 
