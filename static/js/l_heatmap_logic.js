@@ -1,6 +1,6 @@
 // Creating map object
 var myMap = L.map("map", {
-  center: [35.782169, -80.793457],
+  center: [35.7596, -79.0193],
   zoom: 8
 });
 
@@ -13,8 +13,11 @@ L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(myMap);
 
 // Link to GeoJSON
-var APILink = "http://data.beta.nyc//dataset/d6ffa9a4-c598-4b18-8caf-14abde6a5755/resource/74cdcc33-512f-439c-" +
-"a43e-c09588c4b391/download/60dbe69bcd3640d5bedde86d69ba7666geojsonmedianhouseholdincomecensustract.geojson";
+// var APILink = ""http://data.beta.nyc//dataset/d6ffa9a4-c598-4b18-8caf-14abde6a5755/resource/74cdcc33-512f-439c-" +
+// "a43e-c09588c4b391/download/60dbe69bcd3640d5bedde86d69ba7666geojsonmedianhouseholdincomecensustract".geojson";
+
+
+var APILink = "NC_SchoolGrades.geojson";
 
 var geojson;
 
@@ -25,10 +28,10 @@ d3.json(APILink, function(data) {
   geojson = L.choropleth(data, {
 
     // Define what  property in the features to use
-    valueProperty: "MHI",
+    valueProperty: "CENSUSAREA",
 
     // Set color scale
-    scale: ["#d7191c", "#1a9641"],
+    scale: ["#ffffb2", "#b10026"],
 
     // Number of breaks in step range
     steps: 10,
@@ -44,8 +47,8 @@ d3.json(APILink, function(data) {
 
     // Binding a pop-up to each layer
     onEachFeature: function(feature, layer) {
-      layer.bindPopup(feature.properties.LOCALNAME + ", " + feature.properties.State + "<br>Median Household Income:<br>" +
-        "$" + feature.properties.MHI);
+      layer.bindPopup(feature.properties.NAME + ", " + feature.properties.CENSUSAREA + "<br>NC School Grades:<br>" +
+        "$" + feature.properties.CENSUSAREA);
     }
   }).addTo(myMap);
 
@@ -58,7 +61,7 @@ d3.json(APILink, function(data) {
     var labels = [];
 
     // Add min & max
-    var legendInfo = "<h1>School Grades</h1>" +
+    var legendInfo = "<h1>School Grade</h1>" +
       "<div class=\"labels\">" +
         "<div class=\"min\">" + limits[0] + "</div>" +
         "<div class=\"max\">" + limits[limits.length - 1] + "</div>" +
