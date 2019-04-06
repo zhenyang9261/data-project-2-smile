@@ -12,12 +12,8 @@ L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
   accessToken: API_KEY
 }).addTo(myMap);
 
-// Link to GeoJSON
-// var APILink = ""http://data.beta.nyc//dataset/d6ffa9a4-c598-4b18-8caf-14abde6a5755/resource/74cdcc33-512f-439c-" +
-// "a43e-c09588c4b391/download/60dbe69bcd3640d5bedde86d69ba7666geojsonmedianhouseholdincomecensustract".geojson";
 
-
-var APILink = "NC_SchoolGrades.geojson";
+var APILink = "http://shellsd.github.io/NC_School_District1.geojson";
 
 var geojson;
 
@@ -28,10 +24,10 @@ d3.json(APILink, function(data) {
   geojson = L.choropleth(data, {
 
     // Define what  property in the features to use
-    valueProperty: "CENSUSAREA",
+    valueProperty: "HIGRADE",
 
     // Set color scale
-    scale: ["#ffffb2", "#b10026"],
+    scale: ["#990000", "#059900"],
 
     // Number of breaks in step range
     steps: 10,
@@ -47,8 +43,8 @@ d3.json(APILink, function(data) {
 
     // Binding a pop-up to each layer
     onEachFeature: function(feature, layer) {
-      layer.bindPopup(feature.properties.NAME + ", " + feature.properties.CENSUSAREA + "<br>NC School Grades:<br>" +
-        "$" + feature.properties.CENSUSAREA);
+      layer.bindPopup(feature.properties.NAME + "<br>"  + "<br>School Grade:" +
+        feature.properties.HIGRADE);
     }
   }).addTo(myMap);
 
