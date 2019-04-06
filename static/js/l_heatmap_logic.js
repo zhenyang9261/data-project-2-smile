@@ -13,7 +13,7 @@ L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(myMap);
 
 
-var APILink = "http://shellsd.github.io/NC_School_District1.geojson";
+var APILink = "https://shellsd.github.io/NC_School_District.geojson";
 
 var geojson;
 
