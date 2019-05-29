@@ -2,32 +2,59 @@ var map;
 
 //Initialize an object containing icosn for each layer group
 var icons = {
+  Regular: new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  }),
+  Magnet: new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-violet.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  }),
+  Hospital: new L.Icon({
+    iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  })
+};
+/*
+var icons = {
   Regular: L.ExtraMarkers.icon({
     icon: 'ion-settings',
-    iconColor: 'white',
+    iconColor: 'blue',
     markerColor: 'yellow',
     shape: 'star'
   }),
   Magnet: L.ExtraMarkers.icon({
-    icon: 'ion-android-bicyle',
-    iconColor: 'white',
+    icon: 'ion-android-bicycle',
+    iconColor: 'yellow',
     markerColor: 'red',
     shape: 'circle'
   }),
   Hospital: L.ExtraMarkers.icon({
     icon: 'ion-minus-circled',
-    iconColor: 'white',
+    iconColor: 'red',
     markerColor: 'blue-dark',
     shape: 'penta'
   })
 };
-
+*/
 //ADVANCED
 // Initialize the LayerGroups
 var layers = {
   Regular: new L.LayerGroup(),
   Magnet: new L.LayerGroup(),
-  Hospital: new L.LayerGroup
+  Hospital: new L.LayerGroup()
 }; 
 
 //Create an overlays object to add to the layer control
@@ -70,14 +97,14 @@ var overlayMaps = {
 
 //Create map object with options
 map = L.map("map-id", {
-  center: [35.782169, -80.793457],
-  zoom: 12,
+  center: [35.784247, -78.6033379],
+  zoom: 10,
   layers: [lightmap, schoolLocations,
   layers.Regular,
   layers.Magnet,
   layers.Hospital
 ]
-});
+}); 
 
 //Add the info legend to the map
 info.addTo(map);
@@ -86,7 +113,7 @@ info.addTo(map);
 L.control.layers(baseMaps, overlayMaps, overlays, {
   collapsed: false
 }).addTo(map);
-};
+}; 
 
 // Perform an API call to the NC School endpoint
 d3.request("/api/mrkdata", function(response) {
@@ -101,7 +128,7 @@ d3.request("/api/mrkdata", function(response) {
   for (var index = 0; index < schools.length; index++) {
     var school = schools[index];
 
-    var schoolMarker = L.marker([school.lat, school.lon])
+    var schoolMarker = new L.marker([school.lat, school.lon])
       .bindPopup("<h6><b>" + school.district_name + "<h6></b>" + "<h6><b>School Name: </b>" + school.school_name + "<h6><b>School Type: </b>" + school.school_type_txt + "<h6>" + "<h6><b>School Score: </b>" + school.spg_score + "<h6>" + "<h6><b>Student Body: </b>" + school.student_num + "<h6>" + "<h6><b>School Calendar: </b>" + school.calendar_only_txt + "<h6>");
 
     //Add the marker to the schoolMarkers array
@@ -129,6 +156,7 @@ for (var i = 0; i < schools.length; i++)
   //If school is regular, then assign regular status
   if (type.school_type_txt === 'Hospital School') {
     schoolStatusCode = "Hospital";
+    
   }
 
   else if (type.school_type_txt === 'Magnet School') {
@@ -143,7 +171,7 @@ for (var i = 0; i < schools.length; i++)
   schoolCount[schoolStatusCode]++;
 
   //Create new marker with appropriate icon/coordinates
-  var newMarker = L.marker([school.lat, school.lon], {
+  var newMarker = L.marker([type.lat, type.lon], {
     icon: icons[schoolStatusCode]
   });
 
@@ -151,10 +179,10 @@ for (var i = 0; i < schools.length; i++)
   newMarker.addTo(layers[schoolStatusCode]);
 
   //Bind popup.
-  newMarker.bindPopup("<h6><b>" + school.district_name + "<h6></b>" + "<h6><b>School Name: </b>" + school.school_name + "<h6><b>School Type: </b>" + school.school_type_txt + "<h6>" + "<h6><b>School Score: </b>" + school.spg_score + "<h6>" + "<h6><b>Student Body: </b>" + school.student_num + "<h6>" + "<h6><b>School Calendar: </b>" + school.calendar_only_txt + "<h6>");
+  newMarker.bindPopup("<h6><b>" + type.district_name + "<h6></b>" + "<h6><b>School Name: </b>" + type.school_name + "<h6><b>School Type: </b>" + type.school_type_txt + "<h6>" + "<h6><b>School Score: </b>" + type.spg_score + "<h6>" + "<h6><b>Student Body: </b>" + type.student_num + "<h6>" + "<h6><b>School Calendar: </b>" + type.calendar_only_txt + "<h6>");
 }
-
-  //Call the updateLegend function
+  
+   //Call the updateLegend function
   updateLegend(schoolCount);
 });
 

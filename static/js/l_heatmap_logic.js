@@ -13,7 +13,8 @@ L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 }).addTo(myMap);
 
 
-var APILink = "https://shellsd.github.io/NC_School_District.geojson";
+//var APILink = "https://shellsd.github.io/NC_School_District.geojson";
+var APILink = 'static/nc_schools.geojson';
 
 var geojson;
 
@@ -43,7 +44,7 @@ d3.json(APILink, function(data) {
 
     // Binding a pop-up to each layer
     onEachFeature: function(feature, layer) {
-      layer.bindPopup(feature.properties.NAME + "<br>"  + "<br>School Grade:" +
+      layer.bindPopup(feature.properties.CO_NAME + "<br>"  + "<br>School Grade:" +
         feature.properties.HIGRADE);
     }
   }).addTo(myMap);
