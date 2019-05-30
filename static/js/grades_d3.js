@@ -12,7 +12,7 @@ var margin = {
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
-var chartGroup, chosenXAxis;
+var chartGroup, chosenXAxis, chosenYAxis;
 
 // Create an SVG wrappers, append an SVG group that will hold our chart,
 // and shift the latter by left and top margins.
@@ -31,7 +31,7 @@ var svg_ratio = d3
 /*
  * Function to initialize the chart group and X axis
  */
- function init(plotSVG, chosenX) {
+ function init(plotSVG, chosenX, chosenY) {
   
   // Append an SVG group to correct plot area
   if (plotSVG === "ppe") {
@@ -45,12 +45,14 @@ var svg_ratio = d3
 
   // Initial Params
   chosenXAxis = chosenX; 
+  chosenYAxis = chosenY;
 }
 
 /*
  * Function used for updating x-scale var upon click on axis label
  */
 function xScale(factData, chosenXAxis) {
+  
   // create scales
   var xLinearScale = d3.scaleLinear()
     .domain([d3.min(factData, d => d[chosenXAxis]) * 0.8,
@@ -63,9 +65,27 @@ function xScale(factData, chosenXAxis) {
 }
 
 /*
+ * Function used for updating y-scale var upon click on axis label
+ */
+function yScale(factData, chosenYAxis) {
+  //console.log(d3.min(factData, d => d[chosenYAxis]));
+  //console.log(d3.max(factData, d => d[chosenYAxis]));
+
+  // create scales
+  var yLinearScale = d3.scaleLinear()
+    .domain([d3.min(factData, d => d[chosenYAxis]) * 0.8,
+      d3.max(factData, d => d[chosenYAxis]) * 1.2
+    ])
+    .range([height, 0]);
+
+  return yLinearScale;
+
+}
+
+/*
  * Function used for updating xAxis var upon click on axis label
  */
-function renderAxes(newXScale, xAxis) {
+function renderXAxes(newXScale, xAxis) {
   
   var bottomAxis = d3.axisBottom(newXScale);
 
@@ -77,9 +97,23 @@ function renderAxes(newXScale, xAxis) {
 }
 
 /*
- * Function used for updating circles group with a transition to new circles
+ * Function used for updating yAxis var upon click on axis label
  */
-function renderCircles(circlesGroup, newXScale, chosenXaxis) {
+function renderYAxes(newYScale, yAxis) {
+  
+  var leftAxis = d3.axisLeft(newYScale);
+
+  yAxis.transition()
+    .duration(1000)
+    .call(leftAxis);
+
+  return yAxis;
+}
+
+/*
+ * Function used for updating circles group with a transition of X Axis to new circles
+ */
+function renderXCircles(circlesGroup, newXScale) {
 
   circlesGroup.transition()
     .duration(1000)
@@ -89,22 +123,42 @@ function renderCircles(circlesGroup, newXScale, chosenXaxis) {
 }
 
 /*
+ * Function used for updating circles group with a transition of Y Axisto new circles
+ */
+function renderYCircles(circlesGroup, newYScale) {
+
+  circlesGroup.transition()
+    .duration(1000)
+    .attr("cy", d => newYScale(d[chosenYAxis]));
+
+  return circlesGroup;
+}
+
+/*
  * Function used for updating circles group with new tooltip
  */
-function updateToolTip(chosenXAxis, circlesGroup) {
+function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
   
-  var label;
+  var labelX;
   if (chosenXAxis === "federal_ppe") {
-    label = "Federal EPP: ";
+    labelX = "Federal EPP: ";
   }
   else if (chosenXAxis === "state_ppe") {
-    label = "State EPP: ";
+    labelX = "State EPP: ";
   }
   else if (chosenXAxis === "local_ppe") {
-    label = "Local EPP: ";
+    labelX = "Local EPP: ";
   }
   else {
-    label = "Teacher-Student Ratio"
+    labelX = "Teacher-Student Ratio"
+  }
+
+  var labelY;
+  if (chosenYAxis === 'spg_score') {
+    labelY = "Grades";
+  }
+  else {
+    labelY = "Teacher-Student Ratio"
   }
 
   var toolTip = d3.tip()
@@ -112,9 +166,9 @@ function updateToolTip(chosenXAxis, circlesGroup) {
     .offset([60, -30])
     .html(function(d) {
       if (chosenXAxis === 'calc_student_teach_ratio')
-        return (`${d.school_name} ${d.spg_score}<br>${label} ${(d[chosenXAxis]).toFixed(2)}`);
-      else  
-        return (`${d.district_name}<br>${label} ${(d[chosenXAxis]).toFixed(2)}`);
+        return (`${d.school_name} ${d.spg_score}<br>${labelX} ${(d[chosenXAxis]).toFixed(2)}`);
+      else
+        return (`${d.district_name}: ${labelX} ${(d[chosenXAxis]).toFixed(2)} <br>${labelY} ${(d[chosenYAxis]).toFixed(2)}`);
     });
 
   circlesGroup.call(toolTip);
@@ -136,7 +190,7 @@ function updateToolTip(chosenXAxis, circlesGroup) {
 function buildPlot_ppe(factData) {
  
   //init("#grades-d3-ppe", "federal_ppe");
-  init("ppe", "federal_ppe");
+  init("ppe", "federal_ppe", "spg_score");
 
   // Convert data to numeric
   factData.forEach(function(data) {
@@ -144,16 +198,14 @@ function buildPlot_ppe(factData) {
     data.state_ppe = +data.state_ppe;
     data.local_ppe = +data.local_ppe;
     data.spg_score = +data.spg_score;
+    data.calc_student_teach_ratio = +data.calc_student_teach_ratio;
   });
 
   // xLinearScale function above csv import
   var xLinearScale = xScale(factData, chosenXAxis);
 
-  // Create y scale function
-  var yLinearScale = d3.scaleLinear()
-     .domain([d3.min(factData, d => d.spg_score) * 0.8,
-     d3.max(factData, d => d.spg_score) * 1.2])
-     .range([height, 0]);
+  // yLinearScale function above csv import
+  var yLinearScale = yScale(factData, chosenYAxis);
 
   // Create initial axis functions
   var bottomAxis = d3.axisBottom(xLinearScale);
@@ -166,7 +218,7 @@ function buildPlot_ppe(factData) {
     .call(bottomAxis);
 
   // append y axis
-  chartGroup.append("g")
+  var yAxis = chartGroup.append("g")
     .call(leftAxis);
 
   // append initial circles
@@ -175,73 +227,86 @@ function buildPlot_ppe(factData) {
     .enter()
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
-    .attr("cy", d => yLinearScale(d.spg_score))
+    .attr("cy", d => yLinearScale(d[chosenYAxis]))
     .attr("r", 6)
     .attr("fill", "#2E64FE")
     .attr("opacity", "1");
  
-  // Create group for  2 x- axis labels
-  var labelsGroup = chartGroup.append("g")
+  // Create group for  3 x- axis labels
+  var labelsXGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
-  var federalLabel = labelsGroup.append("text")
+  var federalLabel = labelsXGroup.append("text")
     .attr("x", 0)
     .attr("y", 20)
     .attr("value", "federal_ppe") // value to grab for event listener
     .classed("active", true)
     .text("Federal Expense Per Pupil ($)");
 
-  var stateLabel = labelsGroup.append("text")
+  var stateLabel = labelsXGroup.append("text")
     .attr("x", 0)
     .attr("y", 40)
     .attr("value", "state_ppe") // value to grab for event listener
     .classed("inactive", true)
     .text("State Expense Per Pupil ($)");
   
-  var localLabel = labelsGroup.append("text")
+  var localLabel = labelsXGroup.append("text")
     .attr("x", 0)
     .attr("y", 60)
     .attr("value", "local_ppe") // value to grab for event listener
     .classed("inactive", true)
     .text("Local Expense Per Pupil ($)");
 
-  // append y axis
-  chartGroup.append("text")
+  // Create group for  2 y- axis labels
+  var labelsYGroup = chartGroup.append("g")
+    .attr("transform", `translate(${0-margin.left/4*3}, ${height/2})`);
+
+  var gradesLabel = labelsYGroup.append("text")
     .attr("transform", "rotate(-90)")
-    .attr("y", 0 - margin.left)
-    .attr("x", 0 - (height / 4 * 3))
+    .attr("y", 0)
+    .attr("x", 0)
     .attr("dy", "1em")
-    .classed("axis-text", true)
+    .attr("value", "spg_score") // value to grab for event listener
+    .classed("active", true)
     .text("School Performance Grades");
+  
+  var ratiosLabel = labelsYGroup.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 20)
+    .attr("x", 0)
+    .attr("dy", "1em")
+    .attr("value", "calc_student_teach_ratio") // value to grab for event listener
+    .classed("inactive", true)
+    .text("Average Teacher Student Ratios");
 
   // updateToolTip function above csv import
-  var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+  var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
   // x axis labels event listener
-  labelsGroup.selectAll("text")
+  labelsXGroup.selectAll("text")
     .on("click", function() {
       // get value of selection
       var value = d3.select(this).attr("value");
-      console.log(value);
+            
       if (value !== chosenXAxis) {
-
+  
         // replaces chosenXAxis with value
         chosenXAxis = value;
-
+  
         // functions here found above csv import
         // updates x scale for new data
         xLinearScale = xScale(factData, chosenXAxis);
-
+  
         // updates x axis with transition
-        xAxis = renderAxes(xLinearScale, xAxis);
-
+        xAxis = renderXAxes(xLinearScale, xAxis);
+  
         // updates circles with new x values
-        circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+        circlesGroup = renderXCircles(circlesGroup, xLinearScale);
         //textsGroup = renderTexts(textsGroup, xLinearScale, chosenXAxis);
-
+  
         // updates tooltips with new info
-        circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
-
+        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+  
         // changes classes to change bold text
         if (chosenXAxis === "federal_ppe") {
           federalLabel
@@ -276,6 +341,51 @@ function buildPlot_ppe(factData) {
             .classed("active", false)
             .classed("inactive", true);
         }
+      } 
+    });
+
+  // y axis labels event listener
+  labelsYGroup.selectAll("text")
+    .on("click", function() {
+      // get value of selection
+      var value = d3.select(this).attr("value");
+      
+      if (value !== chosenYAxis) {
+  
+        // replaces chosenYAxis with value
+        chosenYAxis = value;
+  
+        // functions here found above csv import
+        // updates y scale for new data
+        yLinearScale = yScale(factData, chosenYAxis);
+  
+        // updates y axis with transition
+        yAxis = renderYAxes(yLinearScale, yAxis);
+  
+        // updates circles with new x values
+        circlesGroup = renderYCircles(circlesGroup, yLinearScale);
+        //textsGroup = renderTexts(textsGroup, xLinearScale, chosenXAxis);
+  
+        // updates tooltips with new info
+        circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+  
+        // changes classes to change bold text
+        if (chosenYAxis === "spg_score") {
+          gradesLabel
+            .classed("active", true)
+            .classed("inactive", false);
+          ratiosLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        }
+        else {
+          ratiosLabel
+            .classed("active", true)
+            .classed("inactive", false);
+          gradesLabel
+            .classed("active", false)
+            .classed("inactive", true);
+        }
       }
     });
 }
@@ -286,7 +396,7 @@ function buildPlot_ppe(factData) {
  */
 function buildPlot_ratio(factData) {
  
-  init("ratio", "calc_student_teach_ratio");
+  init("ratio", "calc_student_teach_ratio", "spg_score");
 
   // Convert data to numeric
   factData.forEach(function(data) {
@@ -308,7 +418,7 @@ function buildPlot_ratio(factData) {
   var leftAxis = d3.axisLeft(yLinearScale);
  
   // append x axis
-  var xAxis = chartGroup.append("g")
+  chartGroup.append("g")
     .classed("x-axis", true)
     .attr("transform", `translate(0, ${height})`)
     .call(bottomAxis);
@@ -332,7 +442,7 @@ function buildPlot_ratio(factData) {
   var labelsGroup = chartGroup.append("g")
     .attr("transform", `translate(${width / 2}, ${height + 20})`);
 
-  var ratioLabel = labelsGroup.append("text")
+  labelsGroup.append("text")
     .attr("x", 0)
     .attr("y", 20)
     .attr("value", "calc_student_teach_ratio") // value to grab for event listener
@@ -349,7 +459,7 @@ function buildPlot_ratio(factData) {
     .text("School Performance Grades");
 
   // updateToolTip function above csv import
-  var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+  var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
 }
 

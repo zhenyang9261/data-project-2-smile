@@ -188,9 +188,9 @@ for (var i = 0; i < schools.length; i++)
 
 function updateLegend(schoolCount) {
   document.querySelector('.legend').innerHTML = [
-    "<p class='Regular'>Regular Schools: " + schoolCount.Regular + "</p>",
-    "<p class='Hospital'>Hospital Schools: " + schoolCount.Hospital + "</p>",
-    "<p class='Magnet'>Magnet Schools: " + schoolCount.Magnet + "</p>",
+    "<p class='Regular' style='color:green;'>Regular Schools: " + schoolCount.Regular + "</p>",
+    "<p class='Hospital' style='color:red;'>Hospital Schools: " + schoolCount.Hospital + "</p>",
+    "<p class='Magnet' style='color:purple;'>Magnet Schools: " + schoolCount.Magnet + "</p>",
   ].join("");
 }
 

@@ -20,7 +20,8 @@ def get_data(db, table):
         table.spg_score,
         func.avg(table.federal_ppe),
         func.avg(table.state_ppe),
-        func.avg(table.local_ppe)
+        func.avg(table.local_ppe),
+        func.avg(table.calc_student_teach_ratio)
     ]
     results = db.session.query(*sel).group_by(table.district_name).all()
 
@@ -33,6 +34,7 @@ def get_data(db, table):
         result_data_dict["federal_ppe"] = result[2]
         result_data_dict["state_ppe"] = result[3]
         result_data_dict["local_ppe"] = result[4]
+        result_data_dict["calc_student_teach_ratio"] = result[5]
 
         results_data_list.append(result_data_dict)
 
